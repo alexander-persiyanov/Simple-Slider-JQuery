@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .my-slider-main-container {
+            width: 50%;
+            height: 300px;
+            outline: solid 1px black;
+        }
+        
+        .my-slider-border-container {
+            width: 100%;
+            height: 100%;
+            outline: solid 1px red;
+        }
+        
+        .my-slider-image-contaier {
+            width: 100%;
+            /* position: relative; */
+            height: 100%;
+            /* width: 100%; */
+            /* overflow-y: hidden; */
+            background-color: orange;
+            outline: solid 1px orange;
+        }
+        
+        .my-slider-image-contaier>.my-slider-item {}
+        
+        .my-slider-item {
+            display: inline-block;
+            width: 500px;
+            height: 100%;
+            background-size: cover;
+        }
+        
+        .items-list {
+            display: inline-block;
+            /* position: relative; */
+            margin: 0;
+            padding: 0;
+            /* top: 0; */
+            /* left: 0; */
+            /*width: 9999px;*/
+            height: 100%;
+            /* background-size: cover; */
+        }
+        
+        .my-slider-item {
+            display: inline;
+            width: 500px;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            float: left;
+        }
+        
+        .my-slider-item>img {
+            width: 100%;
+            height: 100%;
+        }
+        /*---------------------------------------*/
+        
+        #slider1 {
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        #slider1 .wrapper {
+            width: 100%;
+            position: relative;
+            padding-bottom: 50%;
+            background-color: #eee;
+            overflow: hidden;
+        }
+        
+        #slider1 .img-container {
+            width: calc(100% * 6);
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #slider1 .img-container>li {
+            width: calc(100%/6);
+            display: inline;
+            float: left;
+            height: 100%;
+        }
+        
+        #slider1 .img-container>li img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!-- Required meta tags -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            var offsetList = 0;
+            var listImages = $(".items-list").children();
+
+            function startSlider() {
+
+                var widthImage = getWidthImages();
+
+
+                setImageDimenssion(widthImage);
+
+                $(".items-list").width(widthImage * listImages.length);
+
+            }
+
+            function setImageDimenssion(width) {
+                listImages.width(width)
+            }
+
+
+
+            $(".next-slide").click(nextSlide);
+            $(".back-slide").click(backSlide);
+
+            function nextSlide(e) {
+
+                var slidWidth = getWidthImages();
+                offsetList = offsetList - slidWidth;
+                var offsetLastImage = $(".items-list").width() - getWidthImages();
+
+                if (Math.abs(offsetList) <= offsetLastImage) {
+                    $(".items-list").css("margin-left", offsetList)
+                } else {
+                    offsetList = -offsetLastImage;
+                }
+
+
+            }
+
+            function backSlide(e) {
+
+
+                var slidWidth = $(".my-slider-image-contaier").width();
+                offsetList = offsetList + slidWidth;
+                if (offsetList <= 0) {
+                    $(".items-list").css("margin-left", offsetList);
+                } else {
+                    offsetList = 0;
+
+                }
+
+
+
+            }
+
+            // $(window).resize(function() {
+
+            //     startSlider();
+            //     $(".items-list").css("margin-left", 0);
+            // });
+
+            function getWidthImages() {
+                var sliderWidth = $(".my-slider-image-contaier").width();
+                return sliderWidth;
+
+
+            }
+
+            startSlider();
+
+
+
+        })
+    </script>
+
+    <title>My Slider</title>
+</head>
+
+<body>
+    <div class="my-slider-main-container">
+
+        <div class="my-slider-border-container">
+
+            <div class="my-slider-image-contaier">
+                <ul class="items-list">
+                    <li class="my-slider-item" style="  "> <img src="images/3.jpg"></li>
+                    <li class="my-slider-item" style=" "><img src="images/1.jpg"></li>
+                    <li class="my-slider-item" style=" "><img src="images/2.jpg"> </li>
+                    <li class="my-slider-item" style=" "> <img src="images/4.jpg"></li>
+                </ul>
+                <!-- <li class="my-slider-item" style="  background-image: url(images/1.jpg);"> <img src="images/3.jpg"></li>
+                    <li class="my-slider-item" style="  background-image: url(images/3.jpg);"> <img src="images/3.jpg"></li>
+                    <li class="my-slider-item" style="  background-image: url(images/2.jpg);"> <img src="images/3.jpg"></li> -->
+
+                <!-- <div class="my-slider-item"><img src="images/2.jpg"></div>
+                <div class="my-slider-item"><img src="images/3.jpg"></div>
+                <div class="my-slider-item"><img src="images/3.jpg"></div>
+                <div class="my-slider-item"><img src="images/3.jpg"></div>
+                <div class="my-slider-item"><img src="images/3.jpg"></div> -->
+
+            </div>
+
+        </div>
+    </div>
+    <a class="next-slide" href="#">next</a>
+    <a class="back-slide" href="#">back</a>
+
+    <div id="slider1">
+        <div class="wrapper">
+            <ul class="img-container">
+                <li> <img src="images/4.jpg"></li>
+                <li><img src="images/1.jpg"></li>
+                <li><img src="images/2.jpg"> </li>
+                <li> <img src="images/3.jpg"></li>
+                <li> <img src="images/5.jpg"></li>
+                <li> <img src="images/6.jpg"></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

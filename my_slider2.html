@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .my-slider {
+            width: 70%;
+            margin: 0 auto;
+        }
+        
+        .my-slider .wrapper {
+            width: 100%;
+            position: relative;
+            padding-bottom: 50%;
+            background-color: #eee;
+            overflow: hidden;
+        }
+        
+        .my-slider .img-container {
+            width: calc(100% * 6);
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            margin: 0;
+            padding: 0;
+            transition-property: margin-left;
+            transition-duration: 1s;
+        }
+        
+        .my-slider .img-container>li {
+            width: calc(100% / 6);
+            display: inline;
+            float: left;
+            height: 100%;
+        }
+        
+        .my-slider .img-container>li img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .my-slider .next-slide,
+        .back-slide {
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            margin-top: -25px;
+            background-color: white;
+            height: 50px;
+            width: 50px;
+            text-align: center;
+            line-height: 3;
+        }
+        
+        .my-slider .next-slide {
+            right: 10px;
+        }
+        
+        .my-slider .back-slide {
+            left: 10px;
+        }
+    </style>
+    <!-- Required meta tags -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+
+            function Slider(id, speed, orientation) {
+                var defaults = {
+                    prevId: 'prevBtn',
+                    prevText: 'Previous',
+                    nextId: 'nextBtn',
+                    nextText: 'Next',
+                    orientation: 'h',
+                    speed: 800,
+                    a: 4
+                };
+                this.id = id;
+                this.speed = speed ? speed : defaults.speed;
+                this.nextbtn = $("#" + this.id + " " + ".next-slide");
+                this.prevbtn = $("#" + this.id + " " + ".back-slide");
+                this.currentIndex = 1;
+                this.length = $("#" + id + " " + ".img-container").children().length;
+                this.orientation = orientation ? orientation : defaults.orientation;
+
+                var self = this;
+
+                var offset = 0;
+                this.nextImage = function(e) {
+                    if (self.currentIndex <= self.length - 1) {
+
+
+
+                        offset = 0;
+                        var metric;
+                        if (self.orientation == "v") {
+                            metric = $("#" + self.id + " " + ".img-container").height();
+                            offset += metric * self.currentIndex;
+
+                            $("#" + self.id + " " + ".img-container").children().css({
+                                "display": "block",
+                                "float": "none"
+                            });
+                            $("#" + self.id + " " + ".img-container").css({
+                                "transition-property": "margin-top",
+                                "margin-top": -offset + "px"
+
+                            });
+                        } else if (self.orientation == "h") {
+                            metric = $("#" + self.id + " " + ".wrapper").width();
+                            offset += metric * self.currentIndex;
+                            $("#" + self.id + " " + ".img-container").css("margin-left", -offset + "px");
+
+                        }
+                        console.dir(metric);
+
+                        // offset += metric * self.currentIndex;
+                        // $(this).css("outline", "solid 1px red");
+                        // $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+                        self.currentIndex += 1;
+
+                    }
+
+                };
+
+                this.prevImage = function(e) {
+
+                    var metric;
+                    var offset;
+
+                    if (self.currentIndex > 1) {
+                        self.currentIndex -= 1;
+
+                        if (self.orientation == "v") {
+                            metric = $("#" + self.id + " " + ".img-container").height();
+                            offset += metric * self.currentIndex;
+
+                            $("#" + id + " " + ".img-container").children().css({
+                                "display": "block",
+                                "float": "none"
+                            });
+                            $("#" + id + " " + ".img-container").css({
+                                "transition-property": "margin-top",
+                                "margin-top": -offset + "px"
+
+                            });
+                        } else if (self.orientation == "h") {
+                            metric = $("#" + self.id + " " + ".wrapper").width();
+                            offset += metric * self.currentIndex;
+                            $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+
+                        }
+
+
+
+
+
+
+
+                        var offset = $("#" + self.id + " " + ".wrapper").width() * self.currentIndex - $(".wrapper").width();
+
+                        $(this).css("outline", "solid 1px red");
+                        $("#" + id + " " + ".img-container").css("margin-left", "-" + offset + "px");
+
+                    }
+                }
+
+                this.nextbtn.click(this.nextImage);
+                this.prevbtn.click(this.prevImage);
+
+                $(window).resize(function() {
+                    $("#" + self.id + " " + ".img-container").css("transition-duration", "0s");
+                    offset = 0;
+
+
+
+                    offset += $(".wrapper").width() * self.currentIndex - $(".wrapper").width();
+
+                    $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+                    setTimeout(function() {
+                        $("#" + self.id + " " + ".img-container").css("transition-duration", "1s");
+                    }, 1000);
+
+
+                });
+
+
+
+            }
+
+            var sl1 = new Slider("sl-1", 300, );
+            var sl2 = new Slider("sl-2", 300, "v");
+
+
+
+
+            function easySlider(options) {
+                this.a = options.a;
+                this.speed = options.speed;
+            }
+
+
+        });
+    </script>
+
+    <title>My Slider</title>
+</head>
+
+<body>
+
+
+    <div id="sl-1" class="my-slider">
+        <div class="wrapper">
+            <ul class="img-container">
+                <li><img src="images/4.jpg" /></li>
+                <li><img src="images/1.jpg" /></li>
+                <li><img src="images/2.jpg" /></li>
+                <li><img src="images/3.jpg" /></li>
+                <li><img src="images/5.jpg" /></li>
+                <li><img src="images/6.jpg" /></li>
+            </ul>
+
+            <a class="back-slide" href="#">back</a>
+            <a class="next-slide" href="#">next</a>
+        </div>
+
+    </div>
+    <div id="sl-1-panel">
+
+    </div><br><br>
+
+    <div id="sl-2" class="my-slider">
+        <div class="wrapper">
+            <ul class="img-container">
+                <li><img src="images/4.jpg" /></li>
+                <li><img src="images/1.jpg" /></li>
+                <li><img src="images/2.jpg" /></li>
+                <li><img src="images/3.jpg" /></li>
+                <li><img src="images/5.jpg" /></li>
+                <li><img src="images/6.jpg" /></li>
+            </ul>
+            <div class="next-slide" href="#">next</div>
+            <div class="back-slide" href="#">back</div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
