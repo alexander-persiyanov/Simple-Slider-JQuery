@@ -6,6 +6,7 @@
         .my-slider {
             width: 70%;
             margin: 0 auto;
+            max-width: 500px;
         }
         
         .my-slider .wrapper {
@@ -17,7 +18,6 @@
         }
         
         .my-slider .img-container {
-            width: calc(100% * 6);
             height: 100%;
             position: absolute;
             left: 0;
@@ -30,7 +30,6 @@
         }
         
         .my-slider .img-container>li {
-            width: calc(100% / 6);
             display: inline;
             float: left;
             height: 100%;
@@ -42,16 +41,24 @@
         }
         
         .my-slider .next-slide,
-        .back-slide {
+        .my-slider .back-slide {
             z-index: 2;
             position: absolute;
             top: 50%;
             margin-top: -25px;
             background-color: white;
-            height: 50px;
-            width: 50px;
+            height: 40px;
+            width: 40px;
             text-align: center;
-            line-height: 3;
+            line-height: 2.5;
+            text-decoration: none;
+            border-radius: 50%;
+        }
+        
+        .my-slider .next-slide:hover,
+        .my-slider .back-slide:hover {
+            background-color: blanchedalmond;
+            cursor: pointer;
         }
         
         .my-slider .next-slide {
@@ -61,128 +68,312 @@
         .my-slider .back-slide {
             left: 10px;
         }
+        
+        .my-slider .next-slide.disabled,
+        .my-slider .back-slide.disabled {
+            pointer-events: none !important;
+            border: 1px solid #999999;
+            background-color: #cccccc;
+            color: #666666;
+        }
+        
+        .my-slider .nav-slider {
+            position: absolute;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            width: 60%;
+            bottom: 5%;
+            margin: auto;
+        }
+        
+        .my-slider .nav-slider .nav-slider-container {
+            padding: 0;
+            /* background: rgba(255, 245, 215, .5); */
+        }
+        
+        .my-slider .nav-slider ul.nav-slider-container {
+            text-align: center;
+            margin: 0;
+        }
+        
+        .my-slider .nav-slider ul.nav-slider-container li {
+            display: inline-block;
+        }
+        
+        .my-slider .nav-slider ul.nav-slider-container li .nav-item {
+            background-color: #adadad;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border: 1px solid #0000005c;
+        }
+        
+        .my-slider .nav-slider ul.nav-slider-container li .nav-item.nav-item-active {
+            background-color: white;
+        }
+        
+        .my-slider .nav-slider ul.nav-slider-container li .nav-item:hover {
+            cursor: pointer;
+        }
+        /* prova */
     </style>
     <!-- Required meta tags -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
 
-
-            function Slider(id, speed, orientation) {
+            // id, speed, orientation, startIndex
+            function Slider(mySlider) {
+                console.dir(mySlider);
+                var self = this;
+                var offset = 0;
                 var defaults = {
                     prevId: 'prevBtn',
                     prevText: 'Previous',
                     nextId: 'nextBtn',
                     nextText: 'Next',
                     orientation: 'h',
+                    startIndex: 1,
                     speed: 800,
                     a: 4
                 };
-                this.id = id;
-                this.speed = speed ? speed : defaults.speed;
+                this.id = mySlider.id;
+                this.speed = mySlider.speed ? mySlider.speed : defaults.speed;
                 this.nextbtn = $("#" + this.id + " " + ".next-slide");
                 this.prevbtn = $("#" + this.id + " " + ".back-slide");
-                this.currentIndex = 1;
-                this.length = $("#" + id + " " + ".img-container").children().length;
-                this.orientation = orientation ? orientation : defaults.orientation;
+                this.length = $("#" + mySlider.id + " " + ".img-container").children().length;
+                this.orientation = mySlider.orientation ? mySlider.orientation : defaults.orientation;
+                this.currentIndex = startPosition();
 
-                var self = this;
+                function startPosition() {
+                    // var startPosition = startIndex ? startIndex : defaults.startIndex;
 
-                var offset = 0;
-                this.nextImage = function(e) {
-                    if (self.currentIndex <= self.length - 1) {
+                    if (mySlider.startIndex > 0 && mySlider.startIndex <= self.length) {
+
+                        return mySlider.startIndex;
+                    }
+                    return defaults.startIndex;
+
+                }
+
+                this.existNavSlider = function() {
+                    if ($("#" + this.id + " " + ".nav-slider").length) {
+
+                        return true;
+                    } else {
+                        return false;
+                    }
+
+                }
+
+                this.changeCoordinate = function() {
+                    if (self.orientation == "v") {
+
+                        $("#" + this.id + " " + ".img-container").children().css({
+                            "display": "block",
+                            "float": "none"
+                        });
+                        $("#" + this.id + " " + ".img-container").css({
+                            "transition-property": "margin-top",
+
+                        });
+                    }
+                };
+
+                var l = $("#" + mySlider.id + " " + ".img-container").children().length;
+                var s = 100 * this.length;
+                var s2 = 100 / this.length;
+                // console.dir(s);
+                // console.dir(s2);
+
+
+                //-------width for all images_items--------- 
+
+                $("#" + this.id + " " + ".img-container").width(s + '%');
+                $("#" + this.id + " " + ".img-container li").width(s2 + '%');
 
 
 
+                //-------MAKE AND ADD ELEMENS IN NAV--------- 
+                if (this.existNavSlider()) {
+
+
+                    for (var i = 1; i <= this.length; i++) {
+                        var div = $(document.createElement('div'));
+
+                        div.addClass("nav-item")
+
+
+                        var new_li = $(document.createElement('li')).prepend(div);
+
+
+                        $("#" + this.id + " " + ".nav-slider-container").prepend(new_li);
+
+                    }
+                    activeNavItem();
+                    slideNext();
+
+
+
+                }
+
+
+
+                this.changeCoordinate();
+
+                function slideNext() {
+
+                    console.dir(self.currentIndex);
+                    if (self.currentIndex <= self.length) {
+
+                        disabledButtonControl();
                         offset = 0;
                         var metric;
                         if (self.orientation == "v") {
                             metric = $("#" + self.id + " " + ".img-container").height();
-                            offset += metric * self.currentIndex;
+                            offset += metric * (self.currentIndex - 1);
 
-                            $("#" + self.id + " " + ".img-container").children().css({
-                                "display": "block",
-                                "float": "none"
-                            });
+
                             $("#" + self.id + " " + ".img-container").css({
-                                "transition-property": "margin-top",
+
                                 "margin-top": -offset + "px"
 
                             });
                         } else if (self.orientation == "h") {
                             metric = $("#" + self.id + " " + ".wrapper").width();
-                            offset += metric * self.currentIndex;
+                            offset += metric * (self.currentIndex - 1);
                             $("#" + self.id + " " + ".img-container").css("margin-left", -offset + "px");
 
                         }
-                        console.dir(metric);
 
-                        // offset += metric * self.currentIndex;
-                        // $(this).css("outline", "solid 1px red");
-                        // $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
-                        self.currentIndex += 1;
 
                     }
+                }
 
+                function activeNavItem() {
+                    var nav_items_list = $("#" + self.id).find("li .nav-item");
+                    nav_items_list.removeClass("nav-item-active");
+                    var nav_item = nav_items_list.get(self.currentIndex - 1);
+                    $(nav_item).addClass("nav-item-active");
+                }
+
+                this.nextImage = function(e) {
+                    self.currentIndex += 1;
+                    activeNavItem();
+
+
+
+                    slideNext();
                 };
 
                 this.prevImage = function(e) {
-
+                    offset = 0;
                     var metric;
-                    var offset;
+
+
 
                     if (self.currentIndex > 1) {
-                        self.currentIndex -= 1;
+
+                        self.currentIndex = self.currentIndex - 1;
+                        activeNavItem();
+
+                        disabledButtonControl();
+                        console.dir(self.currentIndex);
+
 
                         if (self.orientation == "v") {
                             metric = $("#" + self.id + " " + ".img-container").height();
-                            offset += metric * self.currentIndex;
+                            offset -= metric * self.currentIndex - metric;
 
-                            $("#" + id + " " + ".img-container").children().css({
-                                "display": "block",
-                                "float": "none"
-                            });
-                            $("#" + id + " " + ".img-container").css({
-                                "transition-property": "margin-top",
-                                "margin-top": -offset + "px"
+
+                            $("#" + self.id + " " + ".img-container").css({
+
+                                "margin-top": offset + "px"
 
                             });
+
+
                         } else if (self.orientation == "h") {
-                            metric = $("#" + self.id + " " + ".wrapper").width();
-                            offset += metric * self.currentIndex;
-                            $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+                            offset = $("#" + self.id + " " + ".wrapper").width() * self.currentIndex - $(".wrapper").width();
+
+
+                            $("#" + mySlider.id + " " + ".img-container").css("margin-left", "-" + offset + "px");
 
                         }
+                    }
 
+                }
 
+                function disabledButtonControl() {
 
+                    if (self.currentIndex == self.length) {
+                        self.nextbtn.addClass("disabled");
+                        self.prevbtn.removeClass("disabled");
+                    } else if (self.currentIndex == 1) {
+                        self.prevbtn.addClass("disabled");
+                        self.nextbtn.removeClass("disabled");
 
-
-
-
-                        var offset = $("#" + self.id + " " + ".wrapper").width() * self.currentIndex - $(".wrapper").width();
-
-                        $(this).css("outline", "solid 1px red");
-                        $("#" + id + " " + ".img-container").css("margin-left", "-" + offset + "px");
+                    } else if (self.currentIndex < self.length) {
+                        self.nextbtn.removeClass("disabled");
+                        self.prevbtn.removeClass("disabled");
 
                     }
+
+
+
                 }
 
                 this.nextbtn.click(this.nextImage);
                 this.prevbtn.click(this.prevImage);
 
+                $("#" + this.id + " " + ".nav-item").click(function(e) {
+
+                    var index = $("#" + self.id + " " + ".nav-slider" + " " + ".nav-slider-container li div.nav-item").index(this) + 1;
+                    self.currentIndex = index;
+                    activeNavItem();
+                    slideNext();
+
+                    console.dir(index);
+                });
+
+
                 $(window).resize(function() {
-                    $("#" + self.id + " " + ".img-container").css("transition-duration", "0s");
-                    offset = 0;
+
+                    if (self.orientation == "v") {
+                        offset = 0;
+                        metric = $("#" + self.id + " " + ".img-container").height();
+                        offset -= metric * self.currentIndex - metric;
+
+
+                        $("#" + self.id + " " + ".img-container").css({
+
+                            "margin-top": offset + "px"
+
+                        });
+
+                        setTimeout(function() {
+                            $("#" + self.id + " " + ".img-container").css("transition-duration", "1s");
+                        }, 1000);
+
+
+                    } else if (self.orientation == "h") {
+                        $("#" + self.id + " " + ".img-container").css("transition-duration", "0s");
+                        offset = 0;
 
 
 
-                    offset += $(".wrapper").width() * self.currentIndex - $(".wrapper").width();
+                        offset += $(".wrapper").width() * self.currentIndex - $(".wrapper").width();
 
-                    $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
-                    setTimeout(function() {
-                        $("#" + self.id + " " + ".img-container").css("transition-duration", "1s");
-                    }, 1000);
+                        $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+                        setTimeout(function() {
+                            $("#" + self.id + " " + ".img-container").css("transition-duration", "1s");
+                        }, 1000);
+
+                    }
+
+
 
 
                 });
@@ -191,8 +382,23 @@
 
             }
 
-            var sl1 = new Slider("sl-1", 300, );
-            var sl2 = new Slider("sl-2", 300, "v");
+            // var sl1 = new Slider("sl-1", 300, "h", 8);
+            // var sl2 = new Slider("sl-2", 300, "v", 1);
+
+            var sl1 = new Slider({
+                id: "sl-1",
+                speed: 300,
+                orientation: "h",
+                startIndex: 2,
+            });
+            var sl1 = new Slider({
+                id: "sl-2",
+                speed: 300,
+                orientation: "v",
+                startIndex: 1,
+            });
+
+
 
 
 
@@ -214,6 +420,7 @@
 
     <div id="sl-1" class="my-slider">
         <div class="wrapper">
+
             <ul class="img-container">
                 <li><img src="images/4.jpg" /></li>
                 <li><img src="images/1.jpg" /></li>
@@ -221,7 +428,23 @@
                 <li><img src="images/3.jpg" /></li>
                 <li><img src="images/5.jpg" /></li>
                 <li><img src="images/6.jpg" /></li>
+                <li><img src="images/3.jpg" /></li>
+                <li><img src="images/6.jpg" /></li>
+
             </ul>
+            <div class="nav-slider">
+                <ul class="nav-slider-container">
+                    <!-- <li>
+                        <div class="nav-item"></div>
+                    </li> -->
+
+
+
+
+                </ul>
+            </div>
+
+
 
             <a class="back-slide" href="#">back</a>
             <a class="next-slide" href="#">next</a>
@@ -241,12 +464,27 @@
                 <li><img src="images/3.jpg" /></li>
                 <li><img src="images/5.jpg" /></li>
                 <li><img src="images/6.jpg" /></li>
+
             </ul>
+            <div class="nav-slider">
+                <ul class="nav-slider-container">
+                    <!-- <li>
+                        <div class="nav-item"></div>
+                    </li> -->
+
+
+
+
+                </ul>
+            </div>
+
             <div class="next-slide" href="#">next</div>
             <div class="back-slide" href="#">back</div>
         </div>
 
     </div>
+    <br><br>
+
 
 </body>
 
