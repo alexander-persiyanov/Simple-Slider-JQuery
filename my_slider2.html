@@ -126,8 +126,9 @@
 
             // id, speed, orientation, startIndex
             function Slider(mySlider) {
-                console.dir(mySlider);
+
                 var self = this;
+                console.dir(self);
                 var offset = 0;
                 var defaults = {
                     prevId: 'prevBtn',
@@ -150,9 +151,9 @@
                 function startPosition() {
                     // var startPosition = startIndex ? startIndex : defaults.startIndex;
 
-                    if (mySlider.startIndex > 0 && mySlider.startIndex <= self.length) {
+                    if (self.startIndex > 0 && self.startIndex <= self.length) {
 
-                        return mySlider.startIndex;
+                        return self.startIndex;
                     }
                     return defaults.startIndex;
 
@@ -182,7 +183,7 @@
                     }
                 };
 
-                var l = $("#" + mySlider.id + " " + ".img-container").children().length;
+                var l = $("#" + self.id + " " + ".img-container").children().length;
                 var s = 100 * this.length;
                 var s2 = 100 / this.length;
                 // console.dir(s);
@@ -299,7 +300,7 @@
                             offset = $("#" + self.id + " " + ".wrapper").width() * self.currentIndex - $(".wrapper").width();
 
 
-                            $("#" + mySlider.id + " " + ".img-container").css("margin-left", "-" + offset + "px");
+                            $("#" + self.id + " " + ".img-container").css("margin-left", "-" + offset + "px");
 
                         }
                     }
@@ -366,7 +367,7 @@
 
                         offset += $(".wrapper").width() * self.currentIndex - $(".wrapper").width();
 
-                        $("#" + id + " " + ".img-container").css("margin-left", -offset + "px");
+                        $("#" + self.id + " " + ".img-container").css("margin-left", -offset + "px");
                         setTimeout(function() {
                             $("#" + self.id + " " + ".img-container").css("transition-duration", "1s");
                         }, 1000);
